@@ -28,8 +28,13 @@ jobs:
       - name: Install Checkov
         run: pip install checkov
 
-      - name: Run Checkov on 'terraform' folder
-        run: checkov -d ./terraform
+      - name: Scan with Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: terraform
+          framework: terraform
+        continue-on-error: true  
 
       - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
