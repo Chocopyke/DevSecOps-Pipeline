@@ -1,3 +1,8 @@
+# module "ecr" {
+#   source          = "./modules/ecr"
+#   repository_name = "lamlt-sonvt"
+# }
+
 module "vpc" {
   source = "./modules/vpc"
   name   = var.proj_name
@@ -21,10 +26,6 @@ module "route53_private_hosted_zone" {
   evaluate_target_health = false
 }
 
-# module "ecr" {
-#   source          = "./modules/ecr"
-#   repository_name = "lamlt-sonvt"
-# }
 
 module "ecs" {
   source = "./modules/ecs"
