@@ -1,12 +1,7 @@
 name: Checkov IaC Scanning
 
 on:
-  push:
-    branches: 
-      - terraform
-    paths-ignore:
-      - '.gitignore'
-      - 'README.md'
+  workflow_dispatch
 
 jobs:
   checkov-scan:
@@ -52,5 +47,5 @@ jobs:
         run: |
             cd terraform
             terraform init
-            terraform destroy --auto-approve  
-            terraform apply --auto-approve
+            # terraform destroy --auto-approve  
+            # terraform apply --auto-approve
