@@ -95,37 +95,97 @@ resource "aws_lb_listener" "front_end_listener" {
   protocol          = "HTTP"
 
   default_action {
-    type             = "forward"
+    type = "forward"
     target_group_arn = aws_lb_target_group.front_end_target_group.arn
   }
 }
+
 resource "aws_lb_listener" "cart_service_listener" {
   load_balancer_arn = aws_lb.internal_alb.arn
   port              = 3003
   protocol          = "HTTP"
-
+  
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.cart_service_target_group.arn
+    type             = "fixed-response"
+    fixed_response {
+      content_type = "application/javascript"
+      message_body = "console.log('Default action triggered');"
+      status_code  = "200"
+    }
   }
 }
+resource "aws_lb_listener_rule" "cs_rule" {
+  listener_arn = aws_lb_listener.cart_service_listener.arn
+  priority = 3
+
+  action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.cart_service_target_group.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/api/cart*", "/api/cart/*"]
+    }
+  }
+}
+
 resource "aws_lb_listener" "product_service_listener" {
   load_balancer_arn = aws_lb.internal_alb.arn
   port              = 3002
   protocol          = "HTTP"
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.product_service_target_group.arn
+    type             = "fixed-response"
+    fixed_response {
+      content_type = "application/javascript"
+      message_body = "console.log('Default action triggered');"
+      status_code  = "200"
+    }
   }
 }
+resource "aws_lb_listener_rule" "ps_rule" {
+  listener_arn = aws_lb_listener.product_service_listener.arn
+  priority = 2
+
+  action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.product_service_target_group.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/api/products*", "/api/products/*", "/api/filter*"]
+    }
+  }
+}
+
 resource "aws_lb_listener" "user_service_listener" {
   load_balancer_arn = aws_lb.internal_alb.arn
   port              = 3001
   protocol          = "HTTP"
 
   default_action {
-    type             = "forward"
+    type             = "fixed-response"
+    fixed_response {
+      content_type = "application/javascript"
+      message_body = "console.log('Default action triggered');"
+      status_code  = "200"
+    }
+  }
+}
+resource "aws_lb_listener_rule" "us_rule" {
+  listener_arn = aws_lb_listener.user_service_listener.arn
+  priority = 4
+
+  action {
+    type = "forward"
     target_group_arn = aws_lb_target_group.user_service_target_group.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/api/users*", "/api/users/*"]
+    }
   }
 }
